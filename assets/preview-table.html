@@ -3,8 +3,8 @@
     <meta charset='utf-8' />
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>pg_tileserv: {{.ID}}</title>
-    <script src="./assets/libs/maplibre-gl.js"></script>
-    <link href="./assets/libs/maplibre-gl.css" rel="stylesheet" />
+    <script src="./assets/libs/mapbox-gl.js"></script>
+    <link href="./assets/libs/mapbox-gl.css" rel="stylesheet" />
     <script src="./assets/libs/jquery.min.js"></script>
     <style type="text/css">
       body {margin:0;padding:0;font-family:sans-serif;}
@@ -60,10 +60,7 @@
             'carto-light': {
               'type': 'raster',
               'tiles': [
-                "https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png",
-                "https://b.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png",
-                "https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png",
-                "https://d.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png"
+                "http://t0.tianditu.gov.cn/DataServer?T=img_c&x={x}&y={y}&l={z}&tk=5476e03145570ac8182560f41a1e538b"
               ]
             },
             'wikimedia': {
@@ -149,7 +146,7 @@
         // When a click event occurs on a feature in the states layer, open a popup at the
         // location of the click, with description HTML from its properties.
         map.on('click', id, function(e) {
-          new maplibregl.Popup()
+          new mapboxgl.Popup()
           .setLngLat(e.lngLat)
           .setHTML(featureHtml(e.features[0]))
           .addTo(map);
@@ -192,8 +189,9 @@
       }
 
       // set up the mapbox gl js map object
-      map = new maplibregl.Map(mapConfig);
-      map.addControl(new maplibregl.NavigationControl());
+      mapboxgl.accessToken = "pk.eyJ1IjoiamluZy1zYW0iLCJhIjoiY2l6ZXgxcDA3MDAzbjJ3b3d5c3V0cTdxMSJ9.lncV85QVu9XzKlsOzUf9TA";
+      map = new mapboxgl.Map(mapConfig);
+      map.addControl(new mapboxgl.NavigationControl());
       map.on("load", function() {
         // pass query params thru to tile requests
         queryParam = new URLSearchParams(window.location.search).toString();
