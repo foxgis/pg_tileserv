@@ -98,6 +98,10 @@ func serverURLHost(r *http.Request) string {
 	if fh, ok := r.Header[xfh]; ok {
 		ph = fh[0]
 	}
+	xfport := http.CanonicalHeaderKey("X-Forwarded-Port")
+	if fport, ok := r.Header[xfport]; ok {
+		ph = fmt.Sprintf("%v:%v", ph, fport[0])
+	}
 	xfp := http.CanonicalHeaderKey("X-Forwarded-Proto")
 	if fp, ok := r.Header[xfp]; ok {
 		ps = fp[0]
