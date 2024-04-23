@@ -14,7 +14,7 @@ APPVERSION ?= latest
 GOVERSION ?= 1.21.6
 PROGRAM ?= pg_tileserv
 CONFIG ?= config/$(PROGRAM).toml
-CONTAINER ?= pramsey/$(PROGRAM)
+CONTAINER ?= jingsam/$(PROGRAM)
 DATE ?= $(shell date +%Y%m%d)
 BASE_REGISTRY ?= registry.access.redhat.com
 BASE_IMAGE ?= ubi8-micro
@@ -98,6 +98,17 @@ docker: bin-for-docker Dockerfile set-local build-common ##             Generate
 multi-stage-docker: Dockerfile set-multi-stage build-common ## Generate a BASE_IMAGE container with APPVERSION tag, using a binary built in an alpine golang build container
 
 release: clean docs docker  ##            Generate the docs, a local build, and then uses the local build to generate a BASE_IMAGE container
+
+release-buildx: Dockerfile.buildx set-multi-stage
+	docker buildx build . -f Dockerfile.buildx \
+		--target $(BUILDTYPE) \
+		--platform linux/amd64,linux/arm64 \
+		--build-arg VERSION=$(APPVERSION) \
+		--build-arg GOLANG_VERSION=$(GOVERSION) \
+		--build-arg BASE_REGISTRY=$(BASE_REGISTRY) \
+		--build-arg BASE_IMAGE=$(BASE_IMAGE) \
+		--tag $(CONTAINER) \
+		--push
 
 test:  ##               Run the tests locally
 	go test -v

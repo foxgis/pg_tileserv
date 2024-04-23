@@ -1,0 +1,27 @@
+ARG GOLANG_VERSION
+ARG VERSION
+ARG BASE_REGISTRY
+ARG BASE_IMAGE
+FROM docker.io/library/golang:${GOLANG_VERSION}-alpine AS builder
+LABEL stage=tileservbuilder
+
+ARG VERSION
+
+WORKDIR /app
+COPY . ./
+
+RUN CGO_ENABLED=0 GOOS=linux go build -v -ldflags "-s -w -X main.programVersion=${VERSION}"
+
+FROM ${BASE_REGISTRY}/${BASE_IMAGE} AS multi-stage
+
+COPY --from=builder /app/pg_tileserv /app/
+COPY --from=builder /app/assets /app/assets
+
+VOLUME ["/config"]
+
+USER 1001
+EXPOSE 7800
+
+WORKDIR /app
+ENTRYPOINT ["/app/pg_tileserv"]
+CMD []
