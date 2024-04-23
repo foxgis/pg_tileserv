@@ -107,7 +107,7 @@ release-buildx: Dockerfile.buildx set-multi-stage
 		--build-arg GOLANG_VERSION=$(GOVERSION) \
 		--build-arg BASE_REGISTRY=$(BASE_REGISTRY) \
 		--build-arg BASE_IMAGE=$(BASE_IMAGE) \
-		--tag $(CONTAINER) \
+		--tag $(CONTAINER):latest \
 		--push
 
 test:  ##               Run the tests locally
